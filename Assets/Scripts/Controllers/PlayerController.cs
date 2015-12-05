@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour {
     private List<GameObject> laserPool;
 
     void Start() {
-        this.spriteTransform = GameObject.Find("Ship").transform;
+        this.spriteTransform = GameObject.Find("Sprites").transform;
         this.laserPool = new List<GameObject>(this.laserPoolSize);
         for (int i = 0; i < this.laserPoolSize; i++) {
             this.laserPool.Add(Instantiate(this.laserPrefab));
