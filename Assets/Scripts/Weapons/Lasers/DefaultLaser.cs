@@ -10,7 +10,7 @@ public class DefaultLaser : MonoBehaviour {
 
     void OnDisable() {
         // Cancel invoke if disabled (if hit something)
-        CancelInvoke();
+        CancelInvoke("Disable");
     }
 
     void Disable() {
@@ -19,9 +19,11 @@ public class DefaultLaser : MonoBehaviour {
     }
 
     void OnTriggerEnter2D(Collider2D collider) {
-        if (collider.gameObject.tag == "Enemy") {
+        if (this.transform.parent.tag == "Player" && collider.gameObject.tag == "Enemy"){
             Destroy(collider.gameObject);
             this.gameObject.SetActive(false);
+        } else if (this.transform.parent.tag == "Enemy" && collider.gameObject.tag == "Player") {
+            collider.gameObject.SendMessage("Hit");
         }
     }
 }
