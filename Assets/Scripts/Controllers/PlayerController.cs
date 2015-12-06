@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour {
 
     void Start() {
         // Get the transform of the objects holding the sprites
-        this.spriteTransform = GameObject.Find("Sprites").transform;
+        this.spriteTransform = this.transform.Find("Sprites").transform;
 
         // Initialize the laser pool
         this.laserPool = new List<GameObject>(this.laserPoolSize);
