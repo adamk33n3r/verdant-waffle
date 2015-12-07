@@ -4,26 +4,42 @@ using System.Collections.Generic;
 public class BaseShipController : MonoBehaviour {
     public GameObject laserPrefab;
 
+    // Movement
     public float acceleration = 20f;
     public float maxSpeed = 5f;
     public float rotSpeed = 5f;
+
+    // Laser
     public float laserSpeed = 500f;
-    public float fireRate = 0.1f;
+    public float fireRate = 10f;
     public int laserPoolSize = 20;
+    float nextFire = 0f;
+
+    // Color hit
+    float currentLerpPerc = 0f;
+    Color initialColor;
+    protected Color damagedColor;
+    bool hit = false;
+
+    protected float maxHealth = 100f;
+    protected float currentHealth = 100f;
 
     protected Transform spriteTransform;
     protected SpriteRenderer highlightRenderer;
     protected new Rigidbody2D rigidbody2D;
-    protected float nextFire = 0f;
 
     private List<GameObject> laserPool;
 
     protected virtual void Start() {
         this.rigidbody2D = GetComponent<Rigidbody2D>();
+
         
         // Get the transform of the objects holding the sprites
         this.spriteTransform = this.transform.Find("Sprites").transform;
         this.highlightRenderer = this.transform.Find("Sprites/ShipHighlights").GetComponent<SpriteRenderer>();
+
+        this.initialColor = this.highlightRenderer.color;
+        this.damagedColor = Color.white;
 
         // Initialize the laser pool
         this.laserPool = new List<GameObject>(this.laserPoolSize);
@@ -31,6 +47,12 @@ public class BaseShipController : MonoBehaviour {
             GameObject laser = Instantiate(this.laserPrefab);
             laser.transform.parent = this.transform;
             this.laserPool.Add(laser);
+        }
+    }
+
+    protected virtual void Update() {
+        if (this.hit) {
+            ResetColor();
         }
     }
 
@@ -69,7 +91,7 @@ public class BaseShipController : MonoBehaviour {
 
                 // Fire laser if one exists
                 if (!newLaser.activeInHierarchy) {
-                    this.nextFire = Time.time + this.fireRate;
+                    this.nextFire = Time.time + 1/this.fireRate;
 
                     // Set position and rotation to be the same as the ship
                     newLaser.transform.position = this.transform.position;
@@ -84,6 +106,44 @@ public class BaseShipController : MonoBehaviour {
                     break;
                 }
             }
+        }
+    }
+
+    protected virtual void UpdateHealth(float amt) {
+        this.currentHealth += amt;
+        if (this.currentHealth < 0) {
+            this.currentHealth = 0;
+        } else if (this.currentHealth > this.maxHealth) {
+            this.currentHealth = this.maxHealth;
+        }
+    }
+
+    protected virtual void Kill() {
+        Destroy(this.gameObject);
+    }
+
+    // Messages
+
+    void Hit() {
+        this.highlightRenderer.color = this.damagedColor;
+        this.currentLerpPerc = 0f;
+        this.hit = true;
+        UpdateHealth(-1f);
+        if (this.currentHealth <= 0) {
+            Kill();
+        }
+    }
+
+    void ResetColor() {
+        this.currentLerpPerc += Time.deltaTime / 0.25f;
+        if (this.currentLerpPerc > 1f) {
+            this.currentLerpPerc = 1f;
+        }
+        this.highlightRenderer.color = Color.Lerp(this.damagedColor, this.initialColor, this.currentLerpPerc);
+        if (this.highlightRenderer.color == this.initialColor) {
+            this.highlightRenderer.color = this.initialColor;
+            this.currentLerpPerc = 0f;
+            this.hit = false;
         }
     }
 }

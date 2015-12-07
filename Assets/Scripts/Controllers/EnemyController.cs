@@ -12,8 +12,9 @@ public class EnemyController : BaseShipController {
         Debug.Log("I am awake!");
     }
 
-    void Update() {
-        RotateTo(player.position);
+    protected override void Update() {
+        base.Update();
+        RotateTo(this.player.position);
         ShootLaser();
     }
 

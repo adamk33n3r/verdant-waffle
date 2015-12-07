@@ -19,11 +19,11 @@ public class DefaultLaser : MonoBehaviour {
     }
 
     void OnTriggerEnter2D(Collider2D collider) {
-        if (this.transform.parent.tag == "Player" && collider.gameObject.tag == "Enemy"){
-            Destroy(collider.gameObject);
-            this.gameObject.SetActive(false);
-        } else if (this.transform.parent.tag == "Enemy" && collider.gameObject.tag == "Player") {
+        /* Destroy(collider.gameObject);
+            this.gameObject.SetActive(false);*/
+        if ((this.transform.parent.tag == "Player" && collider.gameObject.tag == "Enemy") || (this.transform.parent.tag == "Enemy" && collider.gameObject.tag == "Player")) {
             collider.gameObject.SendMessage("Hit");
+            Disable();
         }
     }
 }
