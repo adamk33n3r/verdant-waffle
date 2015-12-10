@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DefaultLaser : MonoBehaviour {
+public class TriLaser : MonoBehaviour {
 
     private float damage = 1f;
 
