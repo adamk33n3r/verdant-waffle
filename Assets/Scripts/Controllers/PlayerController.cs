@@ -15,8 +15,8 @@ public class PlayerController : BaseShipController {
         this.firingMaxSpeed = 3f;
         this.rotSpeed = 5f;
         this.firingRotSpeed = 3f;
-        this.laserSpeed = 500f;
-        this.fireRate = 20f;
+        this.laserSpeed = 350f;
+        this.fireRate = 15f;
         this.laserPoolSize = 120;
     }
 
@@ -93,9 +93,9 @@ public class PlayerController : BaseShipController {
                 newLaser.transform.rotation = this.spriteTransform.rotation;
 
                 if (i == 0) {
-                    newLaser.transform.Rotate(new Vector3(0, 0, -20));
+                    newLaser.transform.Rotate(new Vector3(0, 0, -5));
                 } else if (i == 2) {
-                    newLaser.transform.Rotate(new Vector3(0, 0, 20));
+                    newLaser.transform.Rotate(new Vector3(0, 0, 5));
                 }
 
                 // Enable the laser
