@@ -63,10 +63,10 @@ public class BaseShipController : MonoBehaviour {
 
     void OnDrawGizmos() {
         Gizmos.color = Color.yellow;
-        BoxCollider2D collider = GetComponent<BoxCollider2D>();
+        CircleCollider2D collider = GetComponent<CircleCollider2D>();
         if (collider) {
             Gizmos.matrix = this.transform.localToWorldMatrix;
-            Gizmos.DrawWireCube(collider.offset, collider.size);
+            Gizmos.DrawWireSphere(collider.offset, collider.radius);
         }
     }
 
