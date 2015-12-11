@@ -20,6 +20,8 @@ public class PlayerController : BaseShipController {
         this.laserPoolSize = 120;
     }
 
+    /* Unity Functions */
+
     protected void Awake() {
         this.healthBar = GameObject.FindGameObjectWithTag(Tags.Health).GetComponent<HealthBarController>();
     }
@@ -65,7 +67,7 @@ public class PlayerController : BaseShipController {
     }
     
     /* Temporary until weapons are implemented to handle this */
-    protected virtual void ShootLaser() {
+    protected override void ShootLaser() {
         if (Time.time > this.nextFire) {
             this.firing = true;
             List<GameObject> newLasers = new List<GameObject>(3);

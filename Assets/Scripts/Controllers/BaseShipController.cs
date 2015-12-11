@@ -61,6 +61,15 @@ public class BaseShipController : MonoBehaviour {
 
     /* Unity Functions */
 
+    void OnDrawGizmos() {
+        Gizmos.color = Color.yellow;
+        BoxCollider2D collider = GetComponent<BoxCollider2D>();
+        if (collider) {
+            Gizmos.matrix = this.transform.localToWorldMatrix;
+            Gizmos.DrawWireCube(collider.offset, collider.size);
+        }
+    }
+
     protected virtual void Start() {
         this.rigidbody2D = GetComponent<Rigidbody2D>();
 
@@ -89,7 +98,6 @@ public class BaseShipController : MonoBehaviour {
     }
 
     /* Custom Functions */
-
 
     protected void MoveTranslate(Vector2 dir) {
         // Move the ship in direction
