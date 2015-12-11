@@ -72,7 +72,7 @@ public class BaseShipController : MonoBehaviour {
 
     protected virtual void Start() {
         this.rigidbody2D = GetComponent<Rigidbody2D>();
-
+        this.rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
         
         // Get the transform of the objects holding the sprites
         this.spriteTransform = this.transform.Find("Sprites").transform;
