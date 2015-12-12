@@ -12,33 +12,25 @@ public class BaseShipController : BaseGameObject {
 
     private float Acceleration {
         get {
-            return this.firing ? this.firingAcceleration : this.acceleration;
+            return this.activeWeapon.isFiring ? this.firingAcceleration : this.acceleration;
         }
     }
 
     private float MaxSpeed {
         get {
-            return this.firing ? this.firingMaxSpeed : this.maxSpeed;
+            return this.activeWeapon.isFiring ? this.firingMaxSpeed : this.maxSpeed;
         }
     }
 
     private float RotSpeed {
         get {
-            return this.firing ? this.firingRotSpeed : this.rotSpeed;
+            return this.activeWeapon.isFiring ? this.firingRotSpeed : this.rotSpeed;
         }
     }
 
     // Weapons
-    protected List<Weapon> weapons;
-
-    // Laser
-    // TODO: Refactor
-    protected GameObject laserPrefab;
-    protected float laserSpeed = 500f;
-    protected float fireRate = 10f;
-    protected int laserPoolSize = 20;
-    protected float nextFire = 0f;
-    protected bool firing;
+    private List<Weapon> weapons;
+    protected Weapon activeWeapon;
 
     // Color hit
     float currentColorLerpPerc = 0f;
@@ -49,18 +41,27 @@ public class BaseShipController : BaseGameObject {
     protected float maxHealth;
     protected float currentHealth;
 
-    protected Transform spriteTransform;
+    public Transform spriteTransform;
     protected SpriteRenderer highlightRenderer;
     protected new Rigidbody2D rigidbody2D;
 
-    protected List<GameObject> laserPool;
-
-    /* Pseudo Constrcutor */
-
+    /* Pseudo Constructor */
     public override void Initialize(IDictionary<string, object> args) {
-        this.laserPrefab = args["laserPrefab"] as GameObject;
         this.currentHealth = (float)args["startingHealth"];
         this.maxHealth = (float)args["maxHealth"];
+    }
+
+    protected void AddWeapon(Weapon weapon) {
+        weapon.transform.parent = this.transform;
+        weapon.transform.position = this.transform.position;
+        weapon.transform.rotation = this.transform.rotation;
+        weapon.gameObject.tag = this.tag;
+        this.weapons.Add(weapon);
+        this.activeWeapon = weapon;
+    }
+
+    protected void SwitchWeapon(int idx) {
+        this.activeWeapon = this.weapons[idx];
     }
 
     /* Unity Functions */
@@ -81,15 +82,6 @@ public class BaseShipController : BaseGameObject {
 
         this.initialColor = this.highlightRenderer.color;
         this.damagedColor = Color.white;
-
-        // Initialize the laser pool
-        this.laserPool = new List<GameObject>(this.laserPoolSize);
-        for (int i = 0; i < this.laserPoolSize; i++) {
-            GameObject laser = Instantiate(this.laserPrefab);
-            laser.transform.parent = this.transform;
-            laser.layer = LayerMask.NameToLayer(this.tag);
-            this.laserPool.Add(laser);
-        }
     }
 
     protected override void Update() {
@@ -129,28 +121,7 @@ public class BaseShipController : BaseGameObject {
     }
 
     protected virtual void ShootLaser() {
-        if (Time.time > this.nextFire) {
-            this.firing = true;
-            for (int i = 0; i < this.laserPool.Count; i++) {
-                GameObject newLaser = this.laserPool[i];
-                // Fire laser if one exists
-                if (!newLaser.activeInHierarchy) {
-                    this.nextFire = Time.time + 1/this.fireRate;
-
-                    // Set position and rotation to be the same as the ship
-                    newLaser.transform.position = this.transform.position;
-                    newLaser.transform.rotation = this.spriteTransform.rotation;
-
-                    // Enable the laser
-                    newLaser.SetActive(true);
-
-                    // Get the rigid body and add velocity
-                    Rigidbody2D rigidBody = newLaser.GetComponent<Rigidbody2D>();
-                    rigidBody.AddForce(newLaser.transform.rotation * Vector2.up * this.laserSpeed);
-                    break;
-                }
-            }
-        }
+        this.activeWeapon.Fire(0, 500);
     }
 
     protected virtual void UpdateHealth(float amt) {

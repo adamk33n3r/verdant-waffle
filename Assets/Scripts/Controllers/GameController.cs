@@ -7,19 +7,55 @@ public class GameController : MonoBehaviour {
     public GameObject enemyPrefab;
     public GameObject laserPrefab;
 
+    public IDictionary<string, GameObject> shipPrefabs;
+    public IDictionary<string, GameObject> weaponPrefabs;
+    public IDictionary<string, GameObject> ammoPrefabs;
+
     public BaseGameObject CreateObject(GameObject prefab, IDictionary<string, object> args = null) {
         return CreateObject(prefab, Vector3.zero, Quaternion.identity, args);
     }
 
     public BaseGameObject CreateObject(GameObject prefab, Vector3 pos, Quaternion rot, IDictionary<string, object> args = null) {
+        // Instantiate and get attached script
         BaseGameObject obj = (Instantiate(prefab, pos, rot) as GameObject).GetComponent<BaseGameObject>();
+
+        // If it has a script, call Initialize with args
         if (obj) {
             obj.Initialize(args);
+        } else {
+            Debug.LogError("Object does not have a script attached");
         }
         return obj;
     }
 
-    void Awake() { }
+    private GameObject[] LoadPrefabs(string dir) {
+        return Resources.LoadAll<GameObject>("Prefabs/" + dir);
+    }
+
+    void Awake() {
+        Debug.Log("Loading prefabs");
+        Debug.Log("Ships");
+        GameObject[] shipPrefabs = LoadPrefabs("Ships");
+        this.shipPrefabs = new Dictionary<string, GameObject>(shipPrefabs.Length);
+        foreach (GameObject p in shipPrefabs) {
+            Debug.Log("-" + p.name);
+            this.shipPrefabs[p.name] = p;
+        }
+        Debug.Log("Weapons");
+        GameObject[] weaponPrefabs = LoadPrefabs("Weapons");
+        this.weaponPrefabs = new Dictionary<string, GameObject>(weaponPrefabs.Length);
+        foreach (GameObject p in weaponPrefabs) {
+            Debug.Log("-" + p.name);
+            this.weaponPrefabs[p.name] = p;
+        }
+        Debug.Log("Ammo");
+        GameObject[] ammoPrefabs = LoadPrefabs("Ammo");
+        this.ammoPrefabs = new Dictionary<string, GameObject>(ammoPrefabs.Length);
+        foreach (GameObject p in ammoPrefabs) {
+            Debug.Log("-" + p.name);
+            this.ammoPrefabs[p.name] = p;
+        }
+    }
 
     void Start () {
         Debug.Log("Welcome to Dungeons in SPAAAACE!");

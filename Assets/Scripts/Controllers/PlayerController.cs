@@ -15,9 +15,9 @@ public class PlayerController : BaseShipController {
         this.firingMaxSpeed = 3f;
         this.rotSpeed = 5f;
         this.firingRotSpeed = 3f;
-        this.laserSpeed = 350f;
+        /*this.laserSpeed = 350f;
         this.fireRate = 15f;
-        this.laserPoolSize = 120;
+        this.laserPoolSize = 120;*/
     }
 
     /* Unity Functions */
@@ -29,11 +29,9 @@ public class PlayerController : BaseShipController {
 
     protected override void Start() {
         base.Start();
-        Debug.Log(this.gameController);
-        GameObject weaponObj = new GameObject();
-        weaponObj.AddComponent<Weapon>();
-        this.weapons.Add(this.gameController.CreateObject(weaponObj, new Dictionary<string, object> {
-            { "ammo", this.laserPrefab }
+        AddWeapon(this.gameController.CreateObject(this.gameController.weaponPrefabs["TriShot"], new Dictionary<string, object> {
+            { "ammoPrefab", this.gameController.laserPrefab },
+            { "ship", this }
         }) as Weapon);
     }
 
@@ -44,6 +42,7 @@ public class PlayerController : BaseShipController {
         RotateTo(mousePos);
 
         // Move the ship
+        //Debug.Log(this.activeWeapon.isFiring);
         Move();
     }
 
@@ -53,7 +52,7 @@ public class PlayerController : BaseShipController {
         if (Input.GetButton("Fire1")) {
             ShootLaser();
         } else {
-            this.firing = false;
+            //this.firing = false;
         }
     }
 
@@ -73,45 +72,4 @@ public class PlayerController : BaseShipController {
         this.gameObject.SetActive(false);
     }
     
-    /* Temporary until weapons are implemented to handle this */
-    protected override void ShootLaser() {
-        if (Time.time > this.nextFire) {
-            this.firing = true;
-            List<GameObject> newLasers = new List<GameObject>(3);
-            for (int i = 0; i < this.laserPool.Count; i++) {
-                GameObject newLaser = this.laserPool[i];
-                // Fire laser if one exists
-                if (!newLaser.activeInHierarchy) {
-                    newLasers.Add(newLaser);
-                }
-                if (newLasers.Count == 3) {
-                    break;
-                }
-            }
-
-            if (newLasers.Count > 1) {
-                this.nextFire = Time.time + 1 / this.fireRate;
-            }
-
-            for (int i = 0; i < newLasers.Count; i++) {
-                GameObject newLaser = newLasers[i];
-                // Set position and rotation to be the same as the ship
-                newLaser.transform.position = this.transform.position;
-                newLaser.transform.rotation = this.spriteTransform.rotation;
-
-                if (i == 0) {
-                    newLaser.transform.Rotate(new Vector3(0, 0, -5));
-                } else if (i == 2) {
-                    newLaser.transform.Rotate(new Vector3(0, 0, 5));
-                }
-
-                // Enable the laser
-                newLaser.SetActive(true);
-
-                // Get the rigid body and add velocity
-                Rigidbody2D rigidBody = newLaser.GetComponent<Rigidbody2D>();
-                rigidBody.AddForce(newLaser.transform.rotation * Vector2.up * this.laserSpeed);
-            }
-        }
-    }
 }

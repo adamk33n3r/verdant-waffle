@@ -16,16 +16,20 @@ public class EnemyController : BaseShipController {
         this.firingMaxSpeed = 1f;
         this.rotSpeed = 5f;
         this.firingRotSpeed = 5f;
-        this.laserSpeed = 500f;
+
+        /*this.laserSpeed = 500f;
         this.fireRate = 10f;
-        this.laserPoolSize = 20;
+        this.laserPoolSize = 20;*/
     }
 
     protected override void Start() {
         base.Start();
         // Get the players transform
         this.player = GameObject.FindGameObjectWithTag(Tags.Player).transform;
-        Debug.Log("I am awake!");
+        AddWeapon(this.gameController.CreateObject(this.gameController.weaponPrefabs["SingleShot"], new Dictionary<string, object> {
+            { "ammoPrefab", this.gameController.laserPrefab },
+            { "ship", this }
+        }) as Weapon);
     }
 
     protected override void Update() {
