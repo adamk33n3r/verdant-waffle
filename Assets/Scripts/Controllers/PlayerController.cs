@@ -7,8 +7,8 @@ public class PlayerController : BaseShipController {
 
     /* Pseudo Constructor */
 
-    public override void Initialize(GameObject laserPrefab, float currentHealth, float maxHealth) {
-        base.Initialize(laserPrefab, currentHealth, maxHealth);
+    public override void Initialize(IDictionary<string, object> args) {
+        base.Initialize(args);
         this.acceleration = 20f;
         this.firingAcceleration = 10f;
         this.maxSpeed = 5f;
@@ -22,15 +22,22 @@ public class PlayerController : BaseShipController {
 
     /* Unity Functions */
 
-    protected void Awake() {
+    protected override void Awake() {
+        base.Awake();
         this.healthBar = GameObject.FindGameObjectWithTag(Tags.Health).GetComponent<HealthBarController>();
     }
 
     protected override void Start() {
         base.Start();
+        Debug.Log(this.gameController);
+        GameObject weaponObj = new GameObject();
+        weaponObj.AddComponent<Weapon>();
+        this.weapons.Add(this.gameController.CreateObject(weaponObj, new Dictionary<string, object> {
+            { "ammo", this.laserPrefab }
+        }) as Weapon);
     }
 
-    void FixedUpdate() {
+    protected override void FixedUpdate() {
         // Get mouse position
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         // Rotate the ship

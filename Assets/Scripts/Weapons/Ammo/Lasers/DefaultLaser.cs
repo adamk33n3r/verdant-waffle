@@ -1,20 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DefaultLaser : MonoBehaviour {
+public class DefaultLaser : Ammo {
 
     protected float damage = 1f;
-
-    void OnDrawGizmos() {
-        Gizmos.color = Color.white;
-        BoxCollider2D collider = GetComponent<BoxCollider2D>();
-        if (collider) {
-            Gizmos.matrix = this.transform.localToWorldMatrix;
-            Gizmos.DrawWireCube(collider.offset, collider.size);
-        }
-    }
     
-    protected virtual void Awake() {
+    protected override void Awake() {
         if (this.transform.parent.tag == "Enemy") {
             this.damage = 0.1f;
         }
@@ -35,8 +26,7 @@ public class DefaultLaser : MonoBehaviour {
         this.gameObject.SetActive(false);
     }
 
-    protected virtual void OnTriggerEnter2D(Collider2D collider) {
-        //Debug.Log(this.transform.parent.tag + "'s " + this.transform.tag + " hit " + collider.gameObject.tag);
+    protected override void OnTriggerEnter2D(Collider2D collider) {
         // We collided with another bullet. Destroy each other.
         if (collider.gameObject.tag == "Bullet") {
             if ((this.transform.parent.tag == "Player" && collider.gameObject.transform.parent.tag == "Enemy") || (this.transform.parent.tag == "Enemy" && collider.gameObject.transform.parent.tag == "Player")) {

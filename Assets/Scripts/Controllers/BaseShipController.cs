@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class BaseShipController : MonoBehaviour {
+public class BaseShipController : BaseGameObject {
     // Movement
     public float acceleration = 20f;
     public float firingAcceleration = 10f;
@@ -28,8 +28,12 @@ public class BaseShipController : MonoBehaviour {
         }
     }
 
+    // Weapons
+    protected List<Weapon> weapons;
+
     // Laser
-    private GameObject laserPrefab;
+    // TODO: Refactor
+    protected GameObject laserPrefab;
     protected float laserSpeed = 500f;
     protected float fireRate = 10f;
     protected int laserPoolSize = 20;
@@ -51,26 +55,23 @@ public class BaseShipController : MonoBehaviour {
 
     protected List<GameObject> laserPool;
 
-    /* Pseudo Constrcutors */
+    /* Pseudo Constrcutor */
 
-    public virtual void Initialize(GameObject laserPrefab, float currentHealth, float maxHealth) {
-        this.laserPrefab = laserPrefab;
-        this.currentHealth = currentHealth;
-        this.maxHealth = maxHealth;
+    public override void Initialize(IDictionary<string, object> args) {
+        this.laserPrefab = args["laserPrefab"] as GameObject;
+        this.currentHealth = (float)args["startingHealth"];
+        this.maxHealth = (float)args["maxHealth"];
     }
 
     /* Unity Functions */
 
-    void OnDrawGizmos() {
-        Gizmos.color = Color.yellow;
-        CircleCollider2D collider = GetComponent<CircleCollider2D>();
-        if (collider) {
-            Gizmos.matrix = this.transform.localToWorldMatrix;
-            Gizmos.DrawWireSphere(collider.offset, collider.radius);
-        }
+    protected override void Awake() {
+        base.Awake();
+        this.debugColor = Color.yellow;
+        this.weapons = new List<Weapon>(1);
     }
 
-    protected virtual void Start() {
+    protected override void Start() {
         this.rigidbody2D = GetComponent<Rigidbody2D>();
         this.rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
         
@@ -91,7 +92,7 @@ public class BaseShipController : MonoBehaviour {
         }
     }
 
-    protected virtual void Update() {
+    protected override void Update() {
         if (this.hit) {
             ResetColor();
         }

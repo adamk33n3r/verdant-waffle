@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class EnemyController : BaseShipController {
 
@@ -8,8 +8,8 @@ public class EnemyController : BaseShipController {
 
     /* Pseudo Constructor */
 
-    public override void Initialize(GameObject laserPrefab, float currentHealth, float maxHealth) {
-        base.Initialize(laserPrefab, currentHealth, maxHealth);
+    public override void Initialize(IDictionary<string, object> args) {
+        base.Initialize(args);
         this.acceleration = 5f;
         this.firingAcceleration = 5f;
         this.maxSpeed = 1f;
@@ -34,7 +34,7 @@ public class EnemyController : BaseShipController {
         ShootLaser();
     }
 
-    void FixedUpdate() {
+    protected override void FixedUpdate() {
         float distance = (player.position - this.transform.position).magnitude;
         if (distance > 1) {
             MoveToward(player.position);

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class GameController : MonoBehaviour {
 
@@ -7,12 +7,19 @@ public class GameController : MonoBehaviour {
     public GameObject enemyPrefab;
     public GameObject laserPrefab;
 
-    private static GameController _instance;
-    public static GameController instance { get { return GameController._instance; } }
-
-    void Awake() {
-        GameController._instance = this;
+    public BaseGameObject CreateObject(GameObject prefab, IDictionary<string, object> args = null) {
+        return CreateObject(prefab, Vector3.zero, Quaternion.identity, args);
     }
+
+    public BaseGameObject CreateObject(GameObject prefab, Vector3 pos, Quaternion rot, IDictionary<string, object> args = null) {
+        BaseGameObject obj = (Instantiate(prefab, pos, rot) as GameObject).GetComponent<BaseGameObject>();
+        if (obj) {
+            obj.Initialize(args);
+        }
+        return obj;
+    }
+
+    void Awake() { }
 
     void Start () {
         Debug.Log("Welcome to Dungeons in SPAAAACE!");
@@ -21,11 +28,11 @@ public class GameController : MonoBehaviour {
     }
 
     void SpawnPlayer() {
-        GameController.CreatePlayer();
+        CreatePlayer();
     }
 
     void SpawnEnemy() {
-        GameController.CreateEnemy(Random.Range(-10, 10), Random.Range(-10, 10), 10, 100);
+        CreateEnemy(Random.Range(-10, 10), Random.Range(-10, 10), 10, 100);
     }
 
     void Update () {
@@ -41,19 +48,21 @@ public class GameController : MonoBehaviour {
 
     /* Utility Functions */
 
-    public static PlayerController CreatePlayer() {
-        PlayerController playerController = CreateEntity(GameController.instance.playerPrefab, 0, 0).GetComponent<PlayerController>();
-        playerController.Initialize(GameController.instance.laserPrefab, 100, 100);
+    private PlayerController CreatePlayer() {
+        PlayerController playerController = CreateShip(this.playerPrefab, 0, 0, this.laserPrefab, 100, 100).GetComponent<PlayerController>();
         return playerController;
     }
 
-    public static EnemyController CreateEnemy(float x, float y, float startingHealth, float maxHealth) {
-        EnemyController enemyController = CreateEntity(GameController.instance.enemyPrefab, x, y).GetComponent<EnemyController>();
-        enemyController.Initialize(GameController.instance.laserPrefab, startingHealth, maxHealth);
+    private EnemyController CreateEnemy(float x, float y, float startingHealth, float maxHealth) {
+        EnemyController enemyController = CreateShip(this.enemyPrefab, x, y, this.laserPrefab, startingHealth, maxHealth).GetComponent<EnemyController>();
         return enemyController;
     }
 
-    public static GameObject CreateEntity(GameObject prefab, float x, float y) {
-        return Instantiate(prefab, new Vector3(x, y, 0), Quaternion.identity) as GameObject;
+    private BaseGameObject CreateShip(GameObject prefab, float x, float y, GameObject laserPrefab, float startingHealth, float maxHealth) {
+        return CreateObject(prefab, new Vector3(x, y, 0), Quaternion.identity, new Dictionary<string, object> {
+            { "startingHealth", startingHealth },
+            { "laserPrefab", laserPrefab },
+            { "maxHealth", maxHealth },
+        }) as BaseGameObject;
     }
 }
