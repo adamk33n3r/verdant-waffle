@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public abstract class BaseGameObject : MonoBehaviour {
 
     protected GameController gameController;
+    protected Rigidbody2D rigidBody2D;
     protected Color debugColor = Color.white;
 
     /* Utility Functions */
@@ -34,6 +35,7 @@ public abstract class BaseGameObject : MonoBehaviour {
 
     protected virtual void Awake() {
         this.gameController = FindObjectOfType<GameController>();
+        this.rigidBody2D = GetComponent<Rigidbody2D>();
     }
 
     protected virtual void Start() { }

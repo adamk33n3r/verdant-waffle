@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 
 public class GameController : MonoBehaviour {
+    public int ammoCount = 3;
+    public int ammoSpeed = 100;
+    public int ammoSpread = 60;
+    public int fireRate = 10;
+    public int currentWeapon = 1;
+    private PlayerController player;
+
+    public Texture2D cursorTex;
 
     public GameObject playerPrefab;
     public GameObject enemyPrefab;
@@ -33,6 +41,9 @@ public class GameController : MonoBehaviour {
     }
 
     void Awake() {
+        // This should be initialized to 1...idk
+        this.currentWeapon = 1;
+        //Cursor.SetCursor(this.cursorTex, Vector2.zero, CursorMode.ForceSoftware);
         Debug.Log("Loading prefabs");
         Debug.Log("Ships");
         GameObject[] shipPrefabs = LoadPrefabs("Ships");
@@ -60,25 +71,49 @@ public class GameController : MonoBehaviour {
     void Start () {
         Debug.Log("Welcome to Dungeons in SPAAAACE!");
         SpawnPlayer();
-        SpawnEnemy();
+        //SpawnEnemy();
     }
 
     void SpawnPlayer() {
-        CreatePlayer();
+        this.player = CreatePlayer();
     }
 
     void SpawnEnemy() {
-        CreateEnemy(Random.Range(-10, 10), Random.Range(-10, 10), 10, 100);
+        CreateEnemy(Random.Range(-10, 10), Random.Range(-10, 10), 100, 100);
     }
 
     void Update () {
         // Close if escape is pushed
-        if (Input.GetKeyDown("escape")) {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
             Application.Quit();
 
         // Spawn enemy on space
-        } else if (Input.GetKeyDown("space")) {
+        } else if (Input.GetKeyDown(KeyCode.Space)) {
             SpawnEnemy();
+        } else if (Input.GetKeyDown(KeyCode.Alpha1)) {
+            this.player.SwitchWeapon(0);
+            this.currentWeapon = 1;
+        } else if (Input.GetKeyDown(KeyCode.Alpha2)) {
+            this.player.SwitchWeapon(1);
+            this.currentWeapon = 2;
+        } else if (Input.GetKeyDown(KeyCode.PageUp)) {
+            this.ammoCount++;
+        } else if (Input.GetKeyDown(KeyCode.PageDown)) {
+            this.ammoCount--;
+        } else if (Input.GetKey(KeyCode.Home)) {
+            this.ammoSpread++;
+        } else if (Input.GetKey(KeyCode.End)) {
+            this.ammoSpread--;
+        } else if (Input.GetKey(KeyCode.Plus) || Input.GetKey(KeyCode.KeypadPlus)) {
+            this.ammoSpeed++;
+        } else if (Input.GetKey(KeyCode.Minus) || Input.GetKey(KeyCode.KeypadMinus)) {
+            this.ammoSpeed--;
+        } else if (Input.GetKey(KeyCode.RightShift)) {
+            if (Input.GetKeyDown(KeyCode.Period)) {
+                this.fireRate++;
+            } else if (Input.GetKeyDown(KeyCode.Comma)) {
+                this.fireRate--;
+            }
         }
     }
 

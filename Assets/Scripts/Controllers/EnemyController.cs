@@ -44,4 +44,8 @@ public class EnemyController : BaseShipController {
             MoveToward(player.position);
         }
     }
+
+    protected override void ShootLaser() {
+        this.activeWeapon.Fire(1, 0);
+    }
 }

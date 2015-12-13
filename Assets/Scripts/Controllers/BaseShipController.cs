@@ -60,7 +60,7 @@ public class BaseShipController : BaseGameObject {
         this.activeWeapon = weapon;
     }
 
-    protected void SwitchWeapon(int idx) {
+    public void SwitchWeapon(int idx) {
         this.activeWeapon = this.weapons[idx];
     }
 
@@ -121,7 +121,7 @@ public class BaseShipController : BaseGameObject {
     }
 
     protected virtual void ShootLaser() {
-        this.activeWeapon.Fire(0, 500);
+        this.activeWeapon.Fire(this.gameController.ammoCount, this.gameController.ammoSpread);
     }
 
     protected virtual void UpdateHealth(float amt) {

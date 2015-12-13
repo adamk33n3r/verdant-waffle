@@ -29,10 +29,15 @@ public class PlayerController : BaseShipController {
 
     protected override void Start() {
         base.Start();
-        AddWeapon(this.gameController.CreateObject(this.gameController.weaponPrefabs["TriShot"], new Dictionary<string, object> {
-            { "ammoPrefab", this.gameController.laserPrefab },
+        AddWeapon(this.gameController.CreateObject(this.gameController.weaponPrefabs["SingleShot"], new Dictionary<string, object> {
+            { "ammoPrefab", this.gameController.ammoPrefabs["Laser"] },
             { "ship", this }
         }) as Weapon);
+        AddWeapon(this.gameController.CreateObject(this.gameController.weaponPrefabs["SingleShot"], new Dictionary<string, object> {
+            { "ammoPrefab", this.gameController.ammoPrefabs["Missle"] },
+            { "ship", this }
+        }) as Weapon);
+        SwitchWeapon(0);
     }
 
     protected override void FixedUpdate() {
