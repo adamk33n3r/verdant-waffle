@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Weapon;
 
 public class BaseShipController : BaseGameObject {
     // Movement
@@ -29,8 +30,8 @@ public class BaseShipController : BaseGameObject {
     }
 
     // Weapons
-    private List<Weapon> weapons;
-    protected Weapon activeWeapon;
+    protected List<AbstractWeapon> weapons;
+    protected AbstractWeapon activeWeapon;
 
     // Color hit
     float currentColorLerpPerc = 0f;
@@ -43,7 +44,6 @@ public class BaseShipController : BaseGameObject {
 
     public Transform spriteTransform;
     protected SpriteRenderer highlightRenderer;
-    protected new Rigidbody2D rigidbody2D;
 
     /* Pseudo Constructor */
     public override void Initialize(IDictionary<string, object> args) {
@@ -51,17 +51,20 @@ public class BaseShipController : BaseGameObject {
         this.maxHealth = (float)args["maxHealth"];
     }
 
-    protected void AddWeapon(Weapon weapon) {
+    public AbstractWeapon AddWeapon(AbstractWeapon weapon) {
         weapon.transform.parent = this.transform;
         weapon.transform.position = this.transform.position;
         weapon.transform.rotation = this.transform.rotation;
-        weapon.gameObject.tag = this.tag;
         this.weapons.Add(weapon);
-        this.activeWeapon = weapon;
+        if (this.activeWeapon == null) {
+            this.activeWeapon = weapon;
+        }
+        return weapon;
     }
 
-    public void SwitchWeapon(int idx) {
+    public AbstractWeapon SwitchWeapon(int idx) {
         this.activeWeapon = this.weapons[idx];
+        return this.activeWeapon;
     }
 
     /* Unity Functions */
@@ -69,12 +72,11 @@ public class BaseShipController : BaseGameObject {
     protected override void Awake() {
         base.Awake();
         this.debugColor = Color.yellow;
-        this.weapons = new List<Weapon>(1);
+        this.weapons = new List<AbstractWeapon>(1);
     }
 
     protected override void Start() {
-        this.rigidbody2D = GetComponent<Rigidbody2D>();
-        this.rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
+        this.rigidBody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
         
         // Get the transform of the objects holding the sprites
         this.spriteTransform = this.transform.Find("Sprites").transform;
@@ -98,9 +100,9 @@ public class BaseShipController : BaseGameObject {
     }
 
     protected void MoveForce(Vector2 force) {
-        this.rigidbody2D.AddForce(force * this.Acceleration);
-        if (this.rigidbody2D.velocity.magnitude > this.MaxSpeed) {
-            this.rigidbody2D.velocity = this.rigidbody2D.velocity.normalized * this.MaxSpeed;
+        this.GetComponent<Rigidbody2D>().AddForce(force * this.Acceleration);
+        if (this.GetComponent<Rigidbody2D>().velocity.magnitude > this.MaxSpeed) {
+            this.GetComponent<Rigidbody2D>().velocity = this.GetComponent<Rigidbody2D>().velocity.normalized * this.MaxSpeed;
         }
     }
 
@@ -120,7 +122,7 @@ public class BaseShipController : BaseGameObject {
         this.spriteTransform.rotation = Quaternion.Lerp(this.spriteTransform.rotation, Quaternion.Euler(new Vector3(0, 0, angle - 90)), Time.deltaTime * this.RotSpeed);
     }
 
-    protected virtual void ShootLaser() {
+    public virtual void FireWeapon() {
         this.activeWeapon.Fire(this.gameController.ammoCount, this.gameController.ammoSpread);
     }
 

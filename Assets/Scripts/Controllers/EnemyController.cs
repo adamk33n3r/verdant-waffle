@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Weapon;
 
 public class EnemyController : BaseShipController {
 
@@ -26,16 +27,16 @@ public class EnemyController : BaseShipController {
         base.Start();
         // Get the players transform
         this.player = GameObject.FindGameObjectWithTag(Tags.Player).transform;
-        AddWeapon(this.gameController.CreateObject(this.gameController.weaponPrefabs["SingleShot"], new Dictionary<string, object> {
-            { "ammoPrefab", this.gameController.laserPrefab },
+        AddWeapon(this.gameController.CreateObject(this.gameController.weaponPrefabs["Projectile"], new Dictionary<string, object> {
+            { "ammoPrefab", this.gameController.ammoPrefabs["Laser"] },
             { "ship", this }
-        }) as Weapon);
+        }) as AbstractWeapon);
     }
 
     protected override void Update() {
         base.Update();
         RotateTo(this.player.position);
-        ShootLaser();
+        FireWeapon();
     }
 
     protected override void FixedUpdate() {
@@ -45,7 +46,7 @@ public class EnemyController : BaseShipController {
         }
     }
 
-    protected override void ShootLaser() {
+    public override void FireWeapon() {
         this.activeWeapon.Fire(1, 0);
     }
 }

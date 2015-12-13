@@ -7,13 +7,10 @@ public class GameController : MonoBehaviour {
     public int ammoSpread = 60;
     public int fireRate = 10;
     public int currentWeapon = 1;
-    private PlayerController player;
+    public PlayerController player;
+    public GameObject bulletPoolObj;
 
     public Texture2D cursorTex;
-
-    public GameObject playerPrefab;
-    public GameObject enemyPrefab;
-    public GameObject laserPrefab;
 
     public IDictionary<string, GameObject> shipPrefabs;
     public IDictionary<string, GameObject> weaponPrefabs;
@@ -43,6 +40,8 @@ public class GameController : MonoBehaviour {
     void Awake() {
         // This should be initialized to 1...idk
         this.currentWeapon = 1;
+        this.bulletPoolObj = GameObject.Find("BulletPool");
+
         //Cursor.SetCursor(this.cursorTex, Vector2.zero, CursorMode.ForceSoftware);
         Debug.Log("Loading prefabs");
         Debug.Log("Ships");
@@ -90,12 +89,14 @@ public class GameController : MonoBehaviour {
         // Spawn enemy on space
         } else if (Input.GetKeyDown(KeyCode.Space)) {
             SpawnEnemy();
-        } else if (Input.GetKeyDown(KeyCode.Alpha1)) {
-            this.player.SwitchWeapon(0);
-            this.currentWeapon = 1;
-        } else if (Input.GetKeyDown(KeyCode.Alpha2)) {
-            this.player.SwitchWeapon(1);
-            this.currentWeapon = 2;
+        } else if (Input.GetKeyDown(KeyCode.Tab)) {
+            if (this.currentWeapon == 1) {
+                this.player.SwitchWeapon(1);
+                this.currentWeapon = 2;
+            } else {
+                this.player.SwitchWeapon(0);
+                this.currentWeapon = 1;
+            }
         } else if (Input.GetKeyDown(KeyCode.PageUp)) {
             this.ammoCount++;
         } else if (Input.GetKeyDown(KeyCode.PageDown)) {
@@ -120,19 +121,18 @@ public class GameController : MonoBehaviour {
     /* Utility Functions */
 
     private PlayerController CreatePlayer() {
-        PlayerController playerController = CreateShip(this.playerPrefab, 0, 0, this.laserPrefab, 100, 100).GetComponent<PlayerController>();
+        PlayerController playerController = CreateShip(this.shipPrefabs["Player"], 0, 0, 100, 100).GetComponent<PlayerController>();
         return playerController;
     }
 
     private EnemyController CreateEnemy(float x, float y, float startingHealth, float maxHealth) {
-        EnemyController enemyController = CreateShip(this.enemyPrefab, x, y, this.laserPrefab, startingHealth, maxHealth).GetComponent<EnemyController>();
+        EnemyController enemyController = CreateShip(this.shipPrefabs["Enemy"], x, y, startingHealth, maxHealth).GetComponent<EnemyController>();
         return enemyController;
     }
 
-    private BaseGameObject CreateShip(GameObject prefab, float x, float y, GameObject laserPrefab, float startingHealth, float maxHealth) {
+    private BaseGameObject CreateShip(GameObject prefab, float x, float y, float startingHealth, float maxHealth) {
         return CreateObject(prefab, new Vector3(x, y, 0), Quaternion.identity, new Dictionary<string, object> {
             { "startingHealth", startingHealth },
-            { "laserPrefab", laserPrefab },
             { "maxHealth", maxHealth },
         }) as BaseGameObject;
     }

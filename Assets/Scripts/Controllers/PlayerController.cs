@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Weapon;
 
 public class PlayerController : BaseShipController {
 
@@ -29,15 +30,20 @@ public class PlayerController : BaseShipController {
 
     protected override void Start() {
         base.Start();
-        AddWeapon(this.gameController.CreateObject(this.gameController.weaponPrefabs["SingleShot"], new Dictionary<string, object> {
+        AddWeapon(this.gameController.CreateObject(this.gameController.weaponPrefabs["DualWield"], new Dictionary<string, object> {
             { "ammoPrefab", this.gameController.ammoPrefabs["Laser"] },
-            { "ship", this }
-        }) as Weapon);
-        AddWeapon(this.gameController.CreateObject(this.gameController.weaponPrefabs["SingleShot"], new Dictionary<string, object> {
+            { "ship", this },
+            { "x1", 0.3f },
+            { "x2", -0.3f }
+        }) as AbstractWeapon);
+        AbstractWeapon missle = AddWeapon(this.gameController.CreateObject(this.gameController.weaponPrefabs["Projectile"], new Dictionary<string, object> {
             { "ammoPrefab", this.gameController.ammoPrefabs["Missle"] },
             { "ship", this }
-        }) as Weapon);
-        SwitchWeapon(0);
+        }) as AbstractWeapon);
+        missle.transform.Translate(0, -0.3f, 0);
+        foreach (var wep in this.weapons) {
+            Debug.Log(wep);
+        }
     }
 
     protected override void FixedUpdate() {
@@ -55,7 +61,7 @@ public class PlayerController : BaseShipController {
         base.Update();
         // Firin' mah lazor
         if (Input.GetButton("Fire1")) {
-            ShootLaser();
+            FireWeapon();
         } else {
             //this.firing = false;
         }
