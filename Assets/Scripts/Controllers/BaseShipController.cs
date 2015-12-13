@@ -42,7 +42,6 @@ public class BaseShipController : BaseGameObject {
     protected float maxHealth;
     protected float currentHealth;
 
-    public Transform spriteTransform;
     protected SpriteRenderer highlightRenderer;
 
     /* Pseudo Constructor */
@@ -79,7 +78,6 @@ public class BaseShipController : BaseGameObject {
         this.rigidBody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
         
         // Get the transform of the objects holding the sprites
-        this.spriteTransform = this.transform.Find("Sprites").transform;
         this.highlightRenderer = this.transform.Find("Sprites/ShipHighlights").GetComponent<SpriteRenderer>();
 
         this.initialColor = this.highlightRenderer.color;
@@ -119,7 +117,7 @@ public class BaseShipController : BaseGameObject {
         float angle = Mathf.Atan2(heading.y, heading.x) * Mathf.Rad2Deg;
 
         // Set the ships rotation to face the position
-        this.spriteTransform.rotation = Quaternion.Lerp(this.spriteTransform.rotation, Quaternion.Euler(new Vector3(0, 0, angle - 90)), Time.deltaTime * this.RotSpeed);
+        this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.Euler(new Vector3(0, 0, angle - 90)), Time.deltaTime * this.RotSpeed);
     }
 
     public virtual void FireWeapon() {

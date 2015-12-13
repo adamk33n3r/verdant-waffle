@@ -32,7 +32,7 @@ namespace Weapon {
                     GameObject unusedAmmoObj = unusedAmmo.gameObject;
                     // Set position and rotation to be the same as the ship
                     unusedAmmoObj.transform.position = this.transform.position;
-                    unusedAmmoObj.transform.rotation = this.ship.spriteTransform.rotation;
+                    unusedAmmoObj.transform.rotation = this.transform.rotation;
                     unusedAmmoObj.transform.Rotate(new Vector3(0, 0, angles[i]));
 
                     // Enable the laser and fire it
