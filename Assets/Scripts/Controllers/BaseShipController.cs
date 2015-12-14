@@ -39,8 +39,8 @@ public class BaseShipController : BaseGameObject {
     protected Color damagedColor;
     bool hit = false;
 
-    protected float maxHealth;
-    protected float currentHealth;
+    public float maxHealth;
+    public float currentHealth;
 
     protected SpriteRenderer highlightRenderer;
 

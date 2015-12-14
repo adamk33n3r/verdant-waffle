@@ -33,14 +33,20 @@ public class PlayerController : BaseShipController {
         AddWeapon(this.gameController.CreateObject(this.gameController.weaponPrefabs["DualWield"], new Dictionary<string, object> {
             { "ammoPrefab", this.gameController.ammoPrefabs["Laser"] },
             { "ship", this },
-            { "x1", 0.3f },
-            { "x2", -0.3f }
+            { "x1", 0.1f },
+            { "y1", 0.3f },
+            { "x2", -0.1f },
+            { "y2", 0.3f }
         }) as AbstractWeapon);
         AbstractWeapon missle = AddWeapon(this.gameController.CreateObject(this.gameController.weaponPrefabs["Projectile"], new Dictionary<string, object> {
             { "ammoPrefab", this.gameController.ammoPrefabs["Missle"] },
             { "ship", this }
         }) as AbstractWeapon);
         missle.transform.Translate(0, -0.3f, 0);
+        AbstractWeapon beam = AddWeapon(this.gameController.CreateObject(this.gameController.weaponPrefabs["Beam"], new Dictionary<string, object> {
+            { "ammoPrefab", this.gameController.ammoPrefabs["Beam"] },
+            { "ship", this }
+        }) as AbstractWeapon);
         foreach (var wep in this.weapons) {
             Debug.Log(wep);
         }

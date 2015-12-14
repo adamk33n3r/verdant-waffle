@@ -14,9 +14,9 @@ public class HotbarController : BaseGameObject {
     protected override void Update() {
         base.Update();
         if (Input.GetKeyUp(KeyCode.Alpha1)) {
-            this.skills[0].Activate(0);
+            this.skills[0].Activate(6);
         } else if (Input.GetKeyUp(KeyCode.Alpha2)) {
-            this.skills[1].Activate(6);
+            this.skills[1].Activate(10);
         }
     }
 }
