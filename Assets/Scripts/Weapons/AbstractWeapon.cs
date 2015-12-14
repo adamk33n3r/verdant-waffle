@@ -41,7 +41,6 @@ namespace Weapon {
 
         protected override void Update() {
             base.Update();
-            this.fireRate = this.gameController.fireRate;
         }
 
         protected float[] GetSpread(int count, float angle = 5) {

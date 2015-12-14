@@ -121,7 +121,7 @@ public class BaseShipController : BaseGameObject {
     }
 
     public virtual void FireWeapon() {
-        this.activeWeapon.Fire(this.gameController.ammoCount, this.gameController.ammoSpread);
+        this.activeWeapon.Fire(1, 0);
     }
 
     protected virtual void UpdateHealth(float amt) {

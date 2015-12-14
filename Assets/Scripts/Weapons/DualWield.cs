@@ -22,7 +22,16 @@ namespace Weapon {
         public override bool Fire(int count, float angle) {
             bool weapon1Fired = this.weapon1.Fire(count, angle);
             bool weapon2Fired = this.weapon2.Fire(count, angle);
-            return weapon1Fired || weapon2Fired;
+            bool weaponFired = weapon1Fired || weapon2Fired;
+            if (weaponFired) {
+                this.gameController.PlaySound(this.gameController.laser3);
+            }
+            return weaponFired;
+        }
+
+        protected override void Awake() {
+            base.Awake();
+            this.fireRate = 3f;
         }
 
         protected override void Start() {

@@ -26,7 +26,7 @@ namespace Weapon {
             }
 
             protected override void Update() {
-                this.speed = this.gameController.ammoSpeed;
+                //this.speed = this.gameController.ammoSpeed;
                 this.currentVelocity = this.rigidBody2D.velocity;
             }
 

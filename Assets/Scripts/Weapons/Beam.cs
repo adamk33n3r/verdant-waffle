@@ -17,6 +17,7 @@ namespace Weapon {
         public override bool Fire(int count, float angle) {
             this.beam.gameObject.SetActive(true);
             this.beam.Fire();
+            this.gameController.PlaySound(this.gameController.beam);
             return true;
         }
     }

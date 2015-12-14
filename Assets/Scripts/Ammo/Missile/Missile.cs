@@ -18,7 +18,7 @@ namespace Weapon {
             protected override void Awake() {
                 base.Awake();
                 this.damage = 50f;
-                this.speed = 100f;
+                this.speed = 500f;
             }
 
             protected override void OnEnable() {
@@ -33,6 +33,7 @@ namespace Weapon {
                     collider.gameObject.SetActive(false);
                 } else {
                     collider.gameObject.SendMessage("Hit", -this.damage);
+                    this.gameController.PlaySound(this.gameController.explosion);
                     Disable();
                 }
             }

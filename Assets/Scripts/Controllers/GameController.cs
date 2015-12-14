@@ -10,6 +10,13 @@ public class GameController : MonoBehaviour {
     public PlayerController player;
     public GameObject bulletPoolObj;
 
+    public AudioClip explosion;
+    public AudioClip laser1;
+    public AudioClip laser2;
+    public AudioClip laser3;
+    public AudioClip beam;
+    private AudioSource audioSource;
+
     public Texture2D cursorTex;
 
     public IDictionary<string, GameObject> shipPrefabs;
@@ -41,6 +48,7 @@ public class GameController : MonoBehaviour {
         // This should be initialized to 1...idk
         this.currentWeapon = 1;
         this.bulletPoolObj = GameObject.Find("BulletPool");
+        this.audioSource = GetComponent<AudioSource>();
 
         //Cursor.SetCursor(this.cursorTex, Vector2.zero, CursorMode.ForceSoftware);
         Debug.Log("Loading prefabs");
@@ -70,7 +78,11 @@ public class GameController : MonoBehaviour {
     void Start () {
         Debug.Log("Welcome to Dungeons in SPAAAACE!");
         SpawnPlayer();
-        //SpawnEnemy();
+        InvokeRepeating("SpawnEnemy", 0f, 5f);
+    }
+
+    public void PlaySound(AudioClip clip) {
+        this.audioSource.PlayOneShot(clip);
     }
 
     void SpawnPlayer() {

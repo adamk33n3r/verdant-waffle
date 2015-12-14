@@ -9,6 +9,11 @@ namespace Weapon {
                 if (LayerMask.LayerToName(this.gameObject.layer) == "Enemy") {
                     this.damage = 0.1f;
                 }
+                this.speed = 500f;
+            }
+
+            public override void Fire() {
+                base.Fire();
             }
 
             protected override void OnTriggerEnter2D(Collider2D collider) {
